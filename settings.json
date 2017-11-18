@@ -1,0 +1,9 @@
+{
+    "title": "Game",
+    "icon": "assets/icon.png",
+    "fps": 30,
+    "screen": {
+        "width": 800,
+        "height": 600
+    }
+}
