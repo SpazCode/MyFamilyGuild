@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pygame
+from objects.buttons import Button
 
 
 class Screen(object):
@@ -18,6 +19,7 @@ class Screen(object):
     def __init__(self, settings):
         self.__fps = settings['fps']
         self.__clock = pygame.time.Clock()
+        self.__last_wait = 0
         self.__display = pygame.display.set_mode(
             (settings['screen']['width'], settings['screen']['height']))
         pygame.display.set_caption(settings['title'])
@@ -31,5 +33,4 @@ class Screen(object):
     """ Update the screen. """
     def update(self):
         pygame.display.update()
-        fps = self.__clock.tick(self.__fps)
-        print(fps)
+        self.__last_wait = self.__clock.tick(self.__fps)

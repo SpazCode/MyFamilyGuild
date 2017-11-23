@@ -19,8 +19,15 @@ class DisplayObject(object):
             if (self.y >= obj.y and self.y < obj.y + obj.h) or (self.y + self.h > obj.y and self.y + self.h < obj.y + obj.h):
                 return True
 
+    # Deterine the center of the Object
+    # returns a tuple (cx, cy).
+    def get_center(self):
+        cx = self.x+(self.w/2)
+        cy = self.y+(self.h/2)
+        return (cx, cy)
+
     # Draw the display object to screen.
-    def draw(self, secreen):
+    def draw(self, display):
         pass
 
     # Update game everyframe.

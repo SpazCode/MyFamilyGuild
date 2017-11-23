@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-
 from components import util
-
 from components.inputs import Inputs
-
 from components.screen import Screen
-
 import pygame
 
 # Game Initialization

@@ -7,6 +7,7 @@ class Color(object):
     WHITE = pygame.Color(255, 255, 255, 255)
     GRAY = pygame.Color(128, 128, 128, 255)
     LIGHT_GRAY = pygame.Color(191, 191, 191, 255)
+    DARK_GRAY = pygame.Color(64, 64, 64, 255)
     RED = pygame.Color(255, 0, 0, 255)
     DARK_RED = pygame.Color(155, 25, 25, 255)
     BLUE = pygame.Color(0, 0, 255, 255)
