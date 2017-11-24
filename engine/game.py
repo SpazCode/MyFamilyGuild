@@ -46,10 +46,5 @@ class Game(object):
                 if event.type == pygame.QUIT:
                     self.close_window()
 
-if __name__ == "__main__":
-    # Build the game.
-    game = Game('settings.json')
-    game.run_game()
-
-# Deinitialze pygame when the game is over.
-pygame.quit()
+        # Deinitialze pygame when the game is over.
+        pygame.quit()
