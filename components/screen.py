@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import pygame
-from objects.buttons import Button
+from colors import Color
 
 
 class Screen(object):
@@ -29,6 +29,10 @@ class Screen(object):
     """ Return the games current display. """
     def get_display(self):
         return self.__display
+
+    """ Clear the screen so that it can be drawn fresh. """
+    def clear(self):
+        self.__display.fill(Color.BLACK)
 
     """ Update the screen. """
     def update(self):

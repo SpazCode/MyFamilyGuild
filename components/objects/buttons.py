@@ -6,12 +6,15 @@ from ..text import Text
 
 
 class Button(DisplayObject):
+
     # Constructor.
-    def __init__(self, name, init_x=0, init_y=0, init_h=0, init_w=0,
+    def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=0, init_w=0,
                  callback=None, color=Color.GRAY, hover_color=Color.LIGHT_GRAY,
                  disabled_color=Color.DARK_GRAY, text_color=Color.BLACK,
-                 text="", text_size=12, text_font="comicsanssms", enabled=True):
-        super(Button, self).__init__(name, init_x, init_y, init_h, init_w)
+                 text="", text_size=12, text_font="comicsanssms",
+                 enabled=True):
+        super(Button, self).__init__(
+            name, init_z, init_x, init_y, init_h, init_w)
         self.color = color
         self.hover_color = hover_color
         self.disabled_color = disabled_color
@@ -54,7 +57,7 @@ class Button(DisplayObject):
 
     # Run the button callback if the button is clicked this frame.
     def update(self):
-        if self.clicked() and self.enabled:
+        if self.clicked() and self.enabled and self.callback is not None:
             self.callback()
 
     # Set the callback for the button.

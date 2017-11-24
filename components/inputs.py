@@ -4,8 +4,10 @@ import pygame
 
 class Inputs(object):
     # Inner Class to allow for disabling a keymapping.
+
     class Input(object):
         # Constructor.
+
         def __init__(self, c):
             self.enabled = True
             self.callback = c
@@ -30,7 +32,6 @@ class Inputs(object):
     # Run the key presses.
     def update(self, events):
         for event in events:
-            if event.type == pygame.QUIT:
-                self.___key_mapping[event.type].run()
             if event.type == pygame.KEYDOWN:
-                self.___key_mapping[event.key].run()
+                if event.key in self.___key_mapping.keys():
+                    self.___key_mapping[event.key].run()
