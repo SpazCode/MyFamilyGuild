@@ -16,6 +16,7 @@ class Text(DisplayObject):
         self.color = color
 
     def draw(self, display):
+        print("drawing")
         text = self.font.render(self.text, True, self.color)
         rect = text.get_rect()
         rect.center = self.get_center()

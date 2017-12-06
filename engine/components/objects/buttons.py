@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
+import sys
+sys.path.insert(
+    0, '/mnt/Data/Stuart/Projects/Python/pygame/rpg/engine/components')
+
 import pygame
-from ..colors import Color
+from colors import Color
 from display_object import DisplayObject
-from ..text import Text
+from text import Text
 
 
 class Button(DisplayObject):
 
     # Constructor.
-    def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=0, init_w=0,
+    def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=50, init_w=100,
                  callback=None, color=Color.GRAY, hover_color=Color.LIGHT_GRAY,
                  disabled_color=Color.DARK_GRAY, text_color=Color.BLACK,
-                 text="", text_size=12, text_font="comicsanssms",
+                 text="", text_size=32, text_font="comicsanssms",
                  enabled=True):
-        super(Button, self).__init__(
-            name, init_z, init_x, init_y, init_h, init_w)
+        super(Button, self).__init__(name=name, init_z=init_z,
+                                     init_x=init_x, init_y=init_y,
+                                     init_h=init_h, init_w=init_w)
         self.color = color
         self.hover_color = hover_color
         self.disabled_color = disabled_color
@@ -22,9 +27,8 @@ class Button(DisplayObject):
         self.text_size = text_size
         self.callback = callback
         self.enabled = enabled
-        self.text = Text(name + "_label", init_x, init_y, init_h, init_w,
-                         font=text_font, size=text_size, text=text,
-                         color=text_color)
+        self.text = Text(name + "_label", init_z=init_z, init_x=init_x, init_y=init_y, init_h=init_h,
+                         init_w=init_w, font=text_font, size=text_size, text=text, color=text_color)
 
     # Checks if the mouse is currently over the button on the screen.
     def on_hover(self):
