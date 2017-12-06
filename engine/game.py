@@ -20,7 +20,14 @@ class Game(object):
         # Load the game settings
         self.settings = util.load_json(settings_file)
         print(self.settings)
-        self.scene_manager = None
+        self.scene_manager = scene_manager
+        # Load screen.
+        self.screen = Screen(self.settings)
+        # Inform the scenes of the screen and settings.
+        if self.scene_manager is not None:
+            self.scene_manager.set_screen(self.screen)
+            self.scene_manager.set_settings(self.settings)
+            self.scene_manager.build_scenes()
 
     # Flip the bit to colse the window.
     def close_window(self):
@@ -29,18 +36,15 @@ class Game(object):
 
     # The game loop.
     def run_game(self):
-        # Load screen.
-        screen = Screen(self.settings)
-
         # Loop until we want to close the game.
         while self.running:
             # Clear the screen.
-            screen.clear()
+            self.screen.clear()
             # Update the Scene then draw it.
             if self.scene_manager is not None:
-                self.manager.update()
+                self.scene_manager.update()
             # Update the Screen.
-            screen.update()
+            self.screen.update()
             # Check if someone wants to close the window.
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

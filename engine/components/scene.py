@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pygame
+import util
 from inputs import Inputs
 
 """
@@ -11,8 +12,8 @@ from inputs import Inputs
 
 class Scene(object):
 
-    def __init__(self, screen):
-        self.screen = screen
+    def __init__(self):
+        self.screen = None
         self.inputs = Inputs()
         # The list of components in the scene. Components are drawn in order in
         # the list
@@ -21,24 +22,33 @@ class Scene(object):
         self.midground = []
         # The scene manager that this scene sits in.
         self.manager = None
-        # Build the scene components.
-        self.build()
+        # The settings for the game.
+        self.settings = None
 
+    # Build the scene components.
     def build(self):
         pass
+
+    # Informs the scene of the screen.
+    def set_screen(self, screen):
+        self.screen = screen
+
+    # Informs the scene of the game settings.
+    def set_settings(self, settings):
+        self.settings = settings
 
     # Add components to a specific layer. Only Display componetns can be added
     # to a Scene.
     def add_component_background(self, component):
-        if self.__check_if_display_object(component):
+        if util.check_type(component, "DisplayObject"):
             self.background.append(component)
 
     def add_component_midground(self, component):
-        if self.__check_if_display_object(component):
+        if util.check_type(component, "DisplayObject"):
             self.midground.append(component)
 
     def add_component_foreground(self, component):
-        if self.__check_if_display_object(component):
+        if util.check_type(component, "DisplayObject"):
             self.foreground.append(component)
 
     def update(self):
@@ -65,14 +75,6 @@ class Scene(object):
         for component in self.foreground:
             component.draw(self.screen.get_display())
 
-    def __check_if_display_object(self, obj):
-        if type(obj).__name__ == "DisplayObject":
-            return True
-        for classes in type(obj).__bases__:
-            if classes.__name__ == "DisplayObject":
-                return True
-        return False
-
 
 class SceneManager(object):
     def __init__(self):
@@ -80,7 +82,7 @@ class SceneManager(object):
         self.current_scene = ""
 
     def add_scene(self, name, scene):
-        if self.__check_if_scene(scene):
+        if util.check_type(scene, "Scene"):
             scene.manager = self
             self.scenes[name] = scene
 
@@ -92,11 +94,14 @@ class SceneManager(object):
         self.scenes[self.current_scene].update()
         self.scenes[self.current_scene].draw()
 
-    def __check_if_scene(self, obj):
-        if type(obj).__name__ == "Scene":
-            return True
-        for classes in type(obj).__bases__:
-            if classes.__name__ == "Scene":
-                return True
-        return False
+    def set_screen(self, screen):
+        for key in self.scenes.keys():
+            self.scenes[key].set_screen(screen)
 
+    def set_settings(self, settings):
+        for key in self.scenes.keys():
+            self.scenes[key].set_settings(settings)
+
+    def build_scenes(self):
+        for key in self.scenes.keys():
+            self.scenes[key].build()

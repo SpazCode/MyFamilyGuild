@@ -3,8 +3,8 @@
     "icon": "assets/icon.png",
     "fps": 30,
     "screen": {
-        "width": 800,
-        "height": 600
+        "width": 1080,
+        "height": 720
     },
     "fonts": {
         "mono": "assets/fonts/vcr_osd_mono.ttf"
