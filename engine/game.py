@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 from components import util
-from components.colors import Color
-from components.scene import Scene
-from components.scene import SceneManager
 from components.screen import Screen
-from components.objects.buttons import Button
 import pygame
 
 # Game Initialization
@@ -46,7 +42,7 @@ class Game(object):
             # Update the Screen.
             self.screen.update()
             # Check if someone wants to close the window.
-            for event in pygame.event.get():
+            for event in pygame.event.get(pygame.QUIT):
                 if event.type == pygame.QUIT:
                     self.close_window()
 

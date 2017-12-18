@@ -6,13 +6,17 @@
 class DisplayObject(object):
 
     # Constructor
-    def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=0, init_w=0):
+    def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=0, init_w=0, origin_x=0, origin_y=0):
         self.name = name
         self.x = init_x
         self.y = init_y
         self.w = init_w
         self.h = init_h
         self.z = init_z
+        self.originx = origin_x
+        self.originy = origin_y
+        self.offsetx = -origin_x
+        self.offsety = -origin_y
 
     # Check if object has collided
     def collided(self, obj):
@@ -26,6 +30,15 @@ class DisplayObject(object):
         cx = self.x + (self.w / 2)
         cy = self.y + (self.h / 2)
         return (cx, cy)
+
+    # Move object to point on screen based on the custom origin.
+    def move_to(self, x, y):
+        self.x = x + self.offsetx
+        self.y = y + self.offsety
+
+    def move(self, xoffset, yoffset):
+        self.x += xoffset
+        self.y += yoffset
 
     # Draw the display object to screen.
     def draw(self, display):

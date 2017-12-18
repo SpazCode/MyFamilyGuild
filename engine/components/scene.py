@@ -53,7 +53,7 @@ class Scene(object):
 
     def update(self):
         # Update inputs.
-        self.inputs.update(pygame.event.get())
+        self.inputs.update(pygame.event.get([pygame.KEYDOWN, pygame.KEYUP]))
         # Update the game components.
         for component in self.background + self.midground + self.foreground:
             component.update()

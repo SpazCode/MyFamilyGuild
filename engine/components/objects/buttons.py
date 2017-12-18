@@ -19,7 +19,8 @@ class Button(DisplayObject):
                  enabled=True):
         super(Button, self).__init__(name=name, init_z=init_z,
                                      init_x=init_x, init_y=init_y,
-                                     init_h=init_h, init_w=init_w)
+                                     init_h=init_h, init_w=init_w,
+                                     origin_x=0, origin_y=0,)
         self.color = color
         self.hover_color = hover_color
         self.disabled_color = disabled_color

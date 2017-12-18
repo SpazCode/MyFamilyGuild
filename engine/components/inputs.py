@@ -32,6 +32,14 @@ class Inputs(object):
     # Run the key presses.
     def update(self, events):
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key in self.___key_mapping.keys():
-                    self.___key_mapping[event.key].run()
+            k = Inputs.CreateInputKey(event.type, event.key)
+            if k in self.___key_mapping.keys():
+                self.___key_mapping[k].run()
+
+    # Output of inputs.
+    def __str__(self):
+        return str(self.___key_mapping)
+
+    @staticmethod
+    def CreateInputKey(_type, key):
+        return "{0}_{1}".format(_type, key)
