@@ -13,6 +13,9 @@ class DisplayObject(object):
         self.w = init_w
         self.h = init_h
         self.z = init_z
+        self.angle = 0
+        self.flipx = False
+        self.flipy = False
         self.originx = origin_x
         self.originy = origin_y
         self.offsetx = -origin_x

@@ -42,21 +42,21 @@ class Sprite(DisplayObject):
     def scale(self, w, h):
         self.w = w
         self.h = h
-        return Sprite(self.name, init_z=self.z, init_x=self.x, init_y=self.y,
-                      sprite_filepath=self.sprite_filepath,
-                      sprite_surface=pygame.transform.scale(self.image, (w, h)))
+        self.image = pygame.transform.scale(self.image, (w, h))
+        return self
 
     # Flip the image, overwrites the original image.
     def flip(self, x=False, y=False):
-        return Sprite(self.name, init_z=self.z, init_x=self.x, init_y=self.y,
-                      sprite_filepath=self.sprite_filepath,
-                      sprite_surface=pygame.transform.flip(self.image, x, y))
+        self.flipx = x
+        self.flipy = y
+        self.image = pygame.transform.flip(self.image, x, y)
+        return self
 
     # Rotate the image, overwrites the original image.
     def rotate(self, angle=0):
-        return Sprite(self.name, init_z=self.z, init_x=self.x, init_y=self.y,
-                      sprite_filepath=self.sprite_filepath,
-                      sprite_surface=pygame.transform.rotate(self.image, angle))
+        self.angle = angle
+        self.image = pygame.transform.rotate(self.image, angle)
+        return self
 
     # Draw the sprite to the screen
     def draw(self, display):
@@ -114,6 +114,26 @@ class SpriteAnimation(DisplayObject):
         self.loop = loop
         self.load_animation()
 
+    def scale(self, w_multi=1, h_multi=1):
+        for key in self.frame_data.frames.keys():
+            w = self.frame_data.frames[key].w * w_multi
+            h = self.frame_data.frames[key].h * h_multi
+            self.frame_data.frames[key].sprite.scale(w, h)
+        return self
+
+    def flip(self, x=False, y=False):
+        self.flipx = x
+        self.flipy = y
+        for key in self.frame_data.frames.keys():
+            self.frame_data.frames[key].sprite.flip(x=self.flipx, y=self.flipy)
+        return self
+
+    def flip(self, angle=0):
+        self.angle = angle
+        for key in self.frame_data.frames.keys():
+            self.frame_data.frames[key].sprite.rotate(angle=angle)
+        return self
+
     def load_animation(self):
         for key in self.frame_data.frames.keys():
             self.frame_data.frames[key].sprite = self.sprite_sheet.get_sprite((self.frame_data.frames[key].x,
@@ -134,7 +154,8 @@ class SpriteAnimation(DisplayObject):
                 if self.loop:
                     self.curr_sprite = 0
                     self.curr_anim_time = 0
-                    self.next_incrament = 0 + self.frame_data.waits[self.curr_sprite]
+                    self.next_incrament = 0 + \
+                        self.frame_data.waits[self.curr_sprite]
                 else:
                     self.toggle_play()
 

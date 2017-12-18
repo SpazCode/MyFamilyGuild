@@ -24,26 +24,30 @@ class TestScene(Scene):
         # Build Scene components.
         super(TestScene, self).__init__()
         # Set Scene inputs.
-        self.inputs.set(Inputs.CreateInputKey(pygame.KEYDOWN, pygame.K_LEFT), self.move_actor_left)
-        self.inputs.set(Inputs.CreateInputKey(pygame.KEYDOWN, pygame.K_RIGHT), self.move_actor_right)
-        print(self.inputs)
+        self.inputs.set(Inputs.CreateInputKey(
+            pygame.KEYDOWN, pygame.K_LEFT), self.move_actor_left)
+        self.inputs.set(Inputs.CreateInputKey(
+            pygame.KEYDOWN, pygame.K_RIGHT), self.move_actor_right)
 
     def build(self):
         # Loading skeleton framedata.
-        frame_data = FrameData(util.load_json("assets/data/skeleton/idle.json"))
+        frame_data = FrameData(util.load_json(
+            "assets/data/skeleton/idle.json"))
         # Load demo sprite sheet.
-        manager = SpriteSheetManager("assets/sprites/skeleton/Skeleton Idle.png", transparent=True)
+        manager = SpriteSheetManager(
+            "assets/sprites/skeleton/Skeleton Idle.png", transparent=True)
         # Build the compoents in the scene.
         button = Button("test_button", init_z=0, init_x=50,
                         init_y=50, init_w=100, init_h=50, text="Testing")
         self.add_component_midground(button)
         sprite = Sprite("test_background",
                         sprite_filepath="assets/sprites/background.png")
-        sprite = sprite.scale(self.settings["screen"]["width"],
-                              self.settings["screen"]["height"]).flip(x=True)
+        sprite.scale(self.settings["screen"]["width"],
+                     self.settings["screen"]["height"]).flip(x=True)
         self.add_component_background(sprite)
         anim = SpriteAnimation("skeleton_idle", init_x=100, init_y=100,
                                frame_data=frame_data, sprite_sheet=manager)
+        anim.scale(w_multi=3, h_multi=3)
         self.add_component_midground(anim)
         self.actor = anim
 
