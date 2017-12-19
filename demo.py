@@ -45,18 +45,18 @@ class TestScene(Scene):
         sprite.scale(self.settings["screen"]["width"],
                      self.settings["screen"]["height"]).flip(x=True)
         self.add_component_background(sprite)
-        anim = SpriteAnimation("skeleton_idle", init_x=100, init_y=100,
-                               frame_data=frame_data, sprite_sheet=manager)
-        anim.scale(w_multi=3, h_multi=3)
+        anim = SpriteAnimation("skeleton_idle", init_z=1, init_x=0,
+                               init_y=0, frame_data=frame_data,
+                               sprite_sheet=manager)
+        anim.scale(w_multi=4, h_multi=4)
+        anim.move_to(0, 32*4)
         self.add_component_midground(anim)
         self.actor = anim
 
     def move_actor_right(self):
-        print(self.actor.x)
         self.actor.x += 10
 
     def move_actor_left(self):
-        print(self.actor.x)
         self.actor.x -= 10
 
 

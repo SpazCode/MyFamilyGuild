@@ -38,10 +38,15 @@ class DisplayObject(object):
     def move_to(self, x, y):
         self.x = x + self.offsetx
         self.y = y + self.offsety
+        return self
 
-    def move(self, xoffset, yoffset):
-        self.x += xoffset
-        self.y += yoffset
+    # Set origin of the DisplayObject.
+    def set_origin(self, x, y):
+        self.originx = x
+        self.originy = y
+        self.offsetx = -x
+        self.offsety = -y
+        return self
 
     # Draw the display object to screen.
     def draw(self, display):
@@ -53,5 +58,5 @@ class DisplayObject(object):
 
     # String representation of the DOsplay Object on screen.
     def __str__(self):
-        return "{0}: [x: {1}, y: {2}, w: {3}, h: {4}]".format(
-            self.name, self.x, self.y, self.w, self.h)
+        return "{0}: pos: [x: {1}, y: {2}, w: {3}, h: {4}, ox: {5}. oy: {6}]".format(
+            self.name, self.x, self.y, self.w, self.h, self.originx, self.originy)
