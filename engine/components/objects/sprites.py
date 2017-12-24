@@ -9,16 +9,15 @@ class Sprite(DisplayObject):
 
     def __init__(self, name, init_z=0, init_x=0, init_y=0,
                  init_ox=0, init_oy=0, sprite_surface=None,
-                 sprite_filepath=None, sprite_transparent=False):
+                 sprite_filepath=None):
         super(Sprite, self).__init__(
             name, init_z, init_x, init_y, 0, 0, init_ox, init_oy)
         self.image = None
-        self.sprite_filepath = None
         self.sprite_filepath = sprite_filepath
         if sprite_surface is not None:
             self.image = sprite_surface
         elif self.sprite_filepath is not None:
-            self.load_image(sprite_transparent)
+            self.load_image()
         else:
             raise SpriteLoadingExecption(
                 "Could not load a image data for this sprite")
@@ -26,14 +25,10 @@ class Sprite(DisplayObject):
         self.h = self.image.get_height()
 
     # Load the original image.
-    def load_image(self, transparent):
+    def load_image(self):
         try:
-            if not transparent:
-                self.image = pygame.image.load(
-                    os.path.join(self.sprite_filepath)).convert()
-            else:
-                self.image = pygame.image.load(
-                    os.path.join(self.sprite_filepath)).convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join(self.sprite_filepath)).convert_alpha()
         except pygame.error, message:
             raise SpriteLoadingExecption(message)
 
@@ -65,22 +60,15 @@ class Sprite(DisplayObject):
 
 class SpriteSheetManager(object):
 
-    def __init__(self, filename, transparent=False):
-        self.transparent = transparent
+    def __init__(self, filename):
         try:
-            if not transparent:
-                self.sheet = pygame.image.load(filename).convert()
-            else:
-                self.sheet = pygame.image.load(filename).convert_alpha()
+            self.sheet = pygame.image.load(filename).convert_alpha()
         except pygame.error, message:
             raise SpriteLoadingExecption(message)
 
     def get_sprite(self, name, rectangle, colorkey=None):
         rect = pygame.Rect(rectangle)
-        if not self.transparent:
-            image = pygame.Surface(rect.size).convert()
-        else:
-            image = pygame.Surface(rect.size).convert_alpha()
+        image = pygame.Surface(rect.size, pygame.SRCALPHA, 32).convert_alpha()
         image.blit(self.sheet, (0, 0), rect)
         if colorkey is not None:
             if colorkey is -1:
@@ -90,6 +78,23 @@ class SpriteSheetManager(object):
 
     def get_sprites(self, rects, colorkey=None):
         return [self.image_at(rect, colorkey) for rect in rects]
+
+
+# Object to represent set of frames for an animation.
+class FrameData(object):
+
+    def __init__(self, _dict):
+        self.frames = {}
+        vars(self).update(_dict)
+        for key in self.frames.keys():
+            self.frames[key] = Frame(self.frames[key])
+
+
+# Data Object to represent a single frame in an animation.
+class Frame(object):
+
+    def __init__(self, _dict):
+        vars(self).update(_dict)
 
 
 class SpriteAnimation(DisplayObject):
@@ -110,6 +115,8 @@ class SpriteAnimation(DisplayObject):
         # Ensure that the framedata is class FrameData.
         if util.check_type(frame_data, "FrameData"):
             self.frame_data = frame_data
+        # Callback for when the animation completes.
+        self.finish_callback = None
         # The total frame length of the animation.
         self.anim_length = sum(self.frame_data.waits)
         # The current frame that the animation is on.
@@ -125,10 +132,10 @@ class SpriteAnimation(DisplayObject):
         # Load animation based on framedata.
         self.load_animation()
 
-    def scale(self, w_multi=1, h_multi=1):
+    def scale(self, w_scale=1, h_scale=1):
         for key in self.frame_data.frames.keys():
-            w = self.frame_data.frames[key].w * w_multi
-            h = self.frame_data.frames[key].h * h_multi
+            w = self.frame_data.frames[key].w * w_scale
+            h = self.frame_data.frames[key].h * h_scale
             self.frame_data.frames[key].sprite.scale(w, h)
         return self
 
@@ -139,7 +146,7 @@ class SpriteAnimation(DisplayObject):
             self.frame_data.frames[key].sprite.flip(x=self.flipx, y=self.flipy)
         return self
 
-    def flip(self, angle=0):
+    def rotate(self, angle=0):
         self.angle = angle
         for key in self.frame_data.frames.keys():
             self.frame_data.frames[key].sprite.rotate(angle=angle)
@@ -162,10 +169,24 @@ class SpriteAnimation(DisplayObject):
     def move_to(self, x, y):
         self.x = x
         self.y = y
+        return self
 
     # Toogle if the animation is played.
     def toggle_play(self):
         self.play = not self.play
+        return self
+
+    # Toogle if the animation is looped.
+    def toggle_loop(self):
+        self.loop = not self.loop
+        return self
+
+    # Reset the animations.
+    def reset(self):
+        self.curr_sprite = 0
+        self.curr_anim_time = 0
+        self.next_incrament = 0 + self.frame_data.waits[self.curr_sprite]
+        return self
 
     # Update the Sprite based on the place in the animation.
     def update(self):
@@ -173,13 +194,14 @@ class SpriteAnimation(DisplayObject):
             # Incrament animation time.
             self.curr_anim_time += 1
             if self.curr_anim_time >= self.anim_length:
-                if self.loop:
-                    self.curr_sprite = 0
-                    self.curr_anim_time = 0
-                    self.next_incrament = 0 + \
-                        self.frame_data.waits[self.curr_sprite]
+                if self.finish_callback is not None:
+                    self.finish_callback()
+                    return
+                elif self.loop:
+                    self.reset()
                 else:
                     self.toggle_play()
+                    return
 
             # Decide what sprite to show.
             if self.curr_anim_time >= self.next_incrament:
@@ -197,24 +219,93 @@ class SpriteAnimation(DisplayObject):
             self.curr_sprite]].sprite.draw(display)
 
 
-class FrameData(object):
+# A set of sprite animations.
+# Easy way to load muliple sprite animations and defining keys between them.
+class SpriteAnimationSet(DisplayObject):
 
-    def __init__(self, _dict):
-        self.frames = {}
-        vars(self).update(_dict)
-        for key in self.frames.keys():
-            self.frames[key] = Frame(self.frames[key])
+    # Consturctor
+    def __init__(self, name, init_z=0, init_x=0, init_y=0,
+                 init_ox=0, init_oy=0, animations=[]):
+        # SUPER CALL
+        super(SpriteAnimationSet, self).__init__(
+            name, init_z, init_x, init_y, 0, 0, init_ox, init_oy)
+        if len(animations) <= 0:
+            raise InvalidArgumentsExecption("No animation files set.")
+        # Loads animations framedata and spritesheets.
+        self.animations = {}
+        spritesheet = {}
+        for animation in animations:
+            framedata = FrameData(util.load_json(animation[1]))
+            if framedata.sprite_sheet not in spritesheet.keys():
+                spritesheet[framedata.sprite_sheet] = SpriteSheetManager(
+                    framedata.sprite_sheet)
+            self.animations[animation[0]] = SpriteAnimation(animation[0], init_z=1, init_x=0,
+                                                            init_y=0, frame_data=framedata,
+                                                            sprite_sheet=spritesheet[framedata.sprite_sheet])
+        self.curr_animation = animations[0][0]
+
+    # Set the current animation.
+    def set_animation(self, anim):
+        if anim not in self.animations.keys():
+            raise InvalidArgumentsExecption(anim + " is not in the animation set.")
+        self.curr_animation = anim
+        self.animations[anim].reset()
+        self.animations[anim].play = True
+
+    # Set animation onFinishCallbacks
+    def set_on_finish(self, key, callback):
+        if key not in self.animations.keys():
+            raise InvalidArgumentsExecption(key + " is not in the animation set.")
+        self.animations[key].finish_callback = callback
+
+    # Move the animations to a position on screen based on their origins.
+    def move_to(self, x, y):
+        self.x = x
+        self.y = y
+        return self
+
+    # Scale an animation.
+    def scale(self, anim=None, w_scale=1, h_scale=1):
+        if anim is None:
+            for key in self.animations.keys():
+                self.animations[key].scale(w_scale=w_scale, h_scale=h_scale)
+        else:
+            self.animations[anim].scale(w_scale=w_scale, h_scale=h_scale)
+        return self
+
+    # Flip an animation.
+    def flip(self, anim=None, x=False, y=False):
+        if anim is None:
+            for key in self.animations.keys():
+                self.animations[key].flip(x=x, y=y)
+        else:
+            self.animations[anim].flip(x=x, y=y)
+        return self
+
+    # Rotate an animation.
+    def roate(self, anim=None, angle=0):
+        if anim is None:
+            for key in self.animations.keys():
+                self.animations[key].rotate(angle=angle)
+        else:
+            self.animations[anim].rotate(angle=angle)
+        return self
+
+    # Update the current animation.
+    def update(self):
+        self.animations[self.curr_animation].move_to(self.x, self.y)
+        self.animations[self.curr_animation].update()
+
+    # Draw the current animation.
+    def draw(self, display):
+        self.animations[self.curr_animation].draw(display)
 
 
-class Frame(object):
-
-    def __init__(self, _dict):
-        vars(self).update(_dict)
-
-
+# Exceptions for sprites.
 class SpriteLoadingExecption(Exception):
     pass
 
 
+# Exception for invalid arguments
 class InvalidArgumentsExecption(Exception):
     pass

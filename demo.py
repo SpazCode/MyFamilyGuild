@@ -8,7 +8,7 @@ from engine.components.scene import SceneManager
 from engine.components.objects.buttons import Button
 from engine.components.objects.sprites import FrameData
 from engine.components.objects.sprites import Sprite
-from engine.components.objects.sprites import SpriteAnimation
+from engine.components.objects.sprites import SpriteAnimationSet
 from engine.components.objects.sprites import SpriteSheetManager
 
 # Hack to load images early.
@@ -21,21 +21,18 @@ class TestScene(Scene):
     def __init__(self):
         # Scene variables.
         self.actor = None
+        self.attacking = False
         # Build Scene components.
         super(TestScene, self).__init__()
         # Set Scene inputs.
         self.inputs.set(Inputs.CreateInputKey(
-            pygame.KEYDOWN, pygame.K_LEFT), self.move_actor_left)
+            "Pressed", pygame.K_LEFT), self.move_actor_left)
         self.inputs.set(Inputs.CreateInputKey(
-            pygame.KEYDOWN, pygame.K_RIGHT), self.move_actor_right)
+            "Pressed", pygame.K_RIGHT), self.move_actor_right)
+        self.inputs.set(Inputs.CreateInputKey(
+            pygame.KEYDOWN, pygame.K_a), self.attack)
 
     def build(self):
-        # Loading skeleton framedata.
-        frame_data = FrameData(util.load_json(
-            "assets/data/skeleton/idle.json"))
-        # Load demo sprite sheet.
-        manager = SpriteSheetManager(
-            "assets/sprites/skeleton/Skeleton Idle.png", transparent=True)
         # Build the compoents in the scene.
         button = Button("test_button", init_z=0, init_x=50,
                         init_y=50, init_w=100, init_h=50, text="Testing")
@@ -45,19 +42,30 @@ class TestScene(Scene):
         sprite.scale(self.settings["screen"]["width"],
                      self.settings["screen"]["height"]).flip(x=True)
         self.add_component_background(sprite)
-        anim = SpriteAnimation("skeleton_idle", init_z=1, init_x=0,
-                               init_y=0, frame_data=frame_data,
-                               sprite_sheet=manager)
-        anim.scale(w_multi=4, h_multi=4)
-        anim.move_to(0, 32*4)
-        self.add_component_midground(anim)
-        self.actor = anim
+        # Loading skeleton framedata.
+        animations = [("idle", "assets/data/skeleton/idle.json"), 
+                      ("attack", "assets/data/skeleton/attack.json")]
+        self.actor = SpriteAnimationSet("skeleton", init_z=1,
+                                        animations=animations)
+        self.actor.scale(w_scale=4, h_scale=4).move_to(50, 300).set_on_finish("attack", self.return_to_idle)
+        self.add_component_midground(self.actor)
 
     def move_actor_right(self):
-        self.actor.x += 10
+        if not self.attacking:
+            self.actor.x += 10
 
     def move_actor_left(self):
-        self.actor.x -= 10
+        if not self.attacking:
+            self.actor.x -= 10
+
+    def return_to_idle(self):
+        self.attacking = False
+        self.actor.set_animation("idle")
+
+    def attack(self):
+        if not self.attacking:
+            self.attacking = True
+            self.actor.set_animation("attack")
 
 
 if __name__ == "__main__":

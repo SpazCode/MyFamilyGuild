@@ -35,6 +35,11 @@ class Inputs(object):
             k = Inputs.CreateInputKey(event.type, event.key)
             if k in self.___key_mapping.keys():
                 self.___key_mapping[k].run()
+        keys = pygame.key.get_pressed()
+        for key in range(len(keys)):
+            k = Inputs.CreateInputKey("Pressed", key)
+            if k in self.___key_mapping.keys() and keys[key]:
+                self.___key_mapping[k].run()
 
     # Output of inputs.
     def __str__(self):
