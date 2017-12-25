@@ -52,11 +52,11 @@ class TestScene(Scene):
 
     def move_actor_right(self):
         if not self.attacking:
-            self.actor.x += 10
+            self.actor.move_to(self.actor.x + 10, self.actor.y)
 
     def move_actor_left(self):
         if not self.attacking:
-            self.actor.x -= 10
+            self.actor.move_to(self.actor.x - 10, self.actor.y)
 
     def return_to_idle(self):
         self.attacking = False

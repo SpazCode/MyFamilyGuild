@@ -214,6 +214,9 @@ class SpriteAnimation(DisplayObject):
 
     # Draw the animation.
     def draw(self, display):
+        # Update the location again just to make sure it is at the right spot.
+        self.frame_data.frames[self.frame_data.order[
+            self.curr_sprite]].sprite.move_to(self.x, self.y)
         # Draw the current sprite.
         self.frame_data.frames[self.frame_data.order[
             self.curr_sprite]].sprite.draw(display)
@@ -250,6 +253,7 @@ class SpriteAnimationSet(DisplayObject):
             raise InvalidArgumentsExecption(anim + " is not in the animation set.")
         self.curr_animation = anim
         self.animations[anim].reset()
+        self.animations[anim].move_to(self.x, self.y)
         self.animations[anim].play = True
 
     # Set animation onFinishCallbacks
