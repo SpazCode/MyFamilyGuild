@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+
 sys.path.insert(
     0, '/mnt/Data/Stuart/Projects/Python/pygame/rpg/engine/components')
 
@@ -10,7 +11,6 @@ from text import Text
 
 
 class Button(DisplayObject):
-
     # Constructor.
     def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=50, init_w=100,
                  callback=None, color=Color.GRAY, hover_color=Color.LIGHT_GRAY,
@@ -20,7 +20,7 @@ class Button(DisplayObject):
         super(Button, self).__init__(name=name, init_z=init_z,
                                      init_x=init_x, init_y=init_y,
                                      init_h=init_h, init_w=init_w,
-                                     origin_x=0, origin_y=0,)
+                                     origin_x=0, origin_y=0, )
         self.color = color
         self.hover_color = hover_color
         self.disabled_color = disabled_color

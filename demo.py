@@ -17,7 +17,6 @@ pygame.display.set_mode((1, 1))
 
 
 class TestScene(Scene):
-
     def __init__(self):
         # Scene variables.
         self.actor = None
@@ -43,7 +42,7 @@ class TestScene(Scene):
                      self.settings["screen"]["height"]).flip(x=True)
         self.add_component_background(sprite)
         # Loading skeleton framedata.
-        animations = [("idle", "assets/data/skeleton/idle.json"), 
+        animations = [("idle", "assets/data/skeleton/idle.json"),
                       ("attack", "assets/data/skeleton/attack.json")]
         self.actor = SpriteAnimationSet("skeleton", init_z=1,
                                         animations=animations)

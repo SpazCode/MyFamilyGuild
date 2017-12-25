@@ -4,7 +4,6 @@
 # Class to represent game objects on screen. Display objects
 # have screen position, colition detection and are labled with a name.
 class DisplayObject(object):
-
     # Constructor
     def __init__(self, name, init_z=0, init_x=0, init_y=0, init_h=0, init_w=0, origin_x=0, origin_y=0):
         self.name = name
@@ -23,8 +22,10 @@ class DisplayObject(object):
 
     # Check if object has collided
     def collided(self, obj):
-        if (self.x >= obj.x and self.x < obj.x + obj.w) or (self.x + self.w > obj.x and self.x + self.w < obj.x + obj.w):
-            if (self.y >= obj.y and self.y < obj.y + obj.h) or (self.y + self.h > obj.y and self.y + self.h < obj.y + obj.h):
+        if (self.x >= obj.x and self.x < obj.x + obj.w) or (
+                    self.x + self.w > obj.x and self.x + self.w < obj.x + obj.w):
+            if (self.y >= obj.y and self.y < obj.y + obj.h) or (
+                        self.y + self.h > obj.y and self.y + self.h < obj.y + obj.h):
                 return True
 
     # Deterine the center of the Object

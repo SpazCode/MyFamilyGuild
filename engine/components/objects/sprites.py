@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import os
+
 import pygame
 import util
+
 from display_object import DisplayObject
 
 
 class Sprite(DisplayObject):
-
     def __init__(self, name, init_z=0, init_x=0, init_y=0,
                  init_ox=0, init_oy=0, sprite_surface=None,
                  sprite_filepath=None):
@@ -59,7 +60,6 @@ class Sprite(DisplayObject):
 
 
 class SpriteSheetManager(object):
-
     def __init__(self, filename):
         try:
             self.sheet = pygame.image.load(filename).convert_alpha()
@@ -82,7 +82,6 @@ class SpriteSheetManager(object):
 
 # Object to represent set of frames for an animation.
 class FrameData(object):
-
     def __init__(self, _dict):
         self.frames = {}
         vars(self).update(_dict)
@@ -92,13 +91,11 @@ class FrameData(object):
 
 # Data Object to represent a single frame in an animation.
 class Frame(object):
-
     def __init__(self, _dict):
         vars(self).update(_dict)
 
 
 class SpriteAnimation(DisplayObject):
-
     def __init__(self, name, init_z=0, init_x=0, init_y=0,
                  init_ox=0, init_oy=0, sprite_sheet=None,
                  frame_data=None, loop=True):
@@ -225,7 +222,6 @@ class SpriteAnimation(DisplayObject):
 # A set of sprite animations.
 # Easy way to load muliple sprite animations and defining keys between them.
 class SpriteAnimationSet(DisplayObject):
-
     # Consturctor
     def __init__(self, name, init_z=0, init_x=0, init_y=0,
                  init_ox=0, init_oy=0, animations=[]):

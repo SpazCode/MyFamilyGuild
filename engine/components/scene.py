@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pygame
+
 import util
 from inputs import Inputs
 
@@ -11,7 +12,6 @@ from inputs import Inputs
 
 
 class Scene(object):
-
     def __init__(self):
         self.screen = None
         self.inputs = Inputs()
