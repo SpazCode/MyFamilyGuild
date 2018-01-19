@@ -21,6 +21,7 @@ class Button(DisplayObject):
                                      init_x=init_x, init_y=init_y,
                                      init_h=init_h, init_w=init_w,
                                      origin_x=0, origin_y=0,)
+        self._background_color = color
         self.color = color
         self.hover_color = hover_color
         self.disabled_color = disabled_color
@@ -41,6 +42,14 @@ class Button(DisplayObject):
 
     # Check if the button has been clicked.
     def clicked(self):
+        # Set background color.
+        if self.on_hover():
+            self._background_color = self.hover_color
+        elif not self.enabled:
+            self._background_color = self.disabled_color
+        else:
+            self._background_color = self.color
+        # Get User interaction.
         clicked = pygame.mouse.get_pressed()
         if self.on_hover() and clicked[0] == 1:
             return True
@@ -49,15 +58,8 @@ class Button(DisplayObject):
 
     # Draw the button to the screen
     def draw(self, display):
-        if self.on_hover():
-            pygame.draw.rect(display, self.hover_color,
-                             (self.x, self.y, self.w, self.h))
-        elif not self.enabled:
-            pygame.draw.rect(display, self.disabled_color,
-                             (self.x, self.y, self.w, self.h))
-        else:
-            pygame.draw.rect(display, self.color,
-                             (self.x, self.y, self.w, self.h))
+        pygame.draw.rect(display, self._background_color,
+                         (self.x, self.y, self.w, self.h))
         self.text.draw(display)
 
     # Run the button callback if the button is clicked this frame.
