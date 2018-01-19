@@ -28,6 +28,14 @@ class DisplayObject(object):
                         self.y + self.h > obj.y and self.y + self.h < obj.y + obj.h):
                 return True
 
+    # Return a tuple that defines the rect of the display object.
+    def get_size(self):
+        return (self.w, self.h)
+
+    # Return a tuple that defines the rect of the display object.
+    def get_rect(self):
+        return (self.x, self.y, self.w, self.h)
+
     # Deterine the center of the Object
     # returns a tuple (cx, cy).
     def get_center(self):
