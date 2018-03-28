@@ -1,11 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import sys
 
 import pygame
 
+from engine.components.colors import Color
 from engine.components.inputs import Inputs
 from engine.components.objects.buttons import Button
 from engine.components.objects.frames import Frame
+from engine.components.objects.menus import Menu
+from engine.components.objects.menus import MenuType
 from engine.components.objects.sprites import Sprite
 from engine.components.objects.sprites import SpriteAnimationSet
 from engine.components.scene import Scene
@@ -50,9 +53,13 @@ class TestScene(Scene):
                         init_y=25, init_w=100, init_h=50, text="Quit")
         button.set_callback(self.quit_game)
         menu_frame = Frame("fme_menu", init_z=0, init_h=100, init_w=150,
-                           init_x=((self.settings["screen"]["width"] / 2) - 75), init_y=400)\
-            .add_components(button, 25, 25)
+                           init_x=((self.settings["screen"]["width"] / 2) - 75),
+                           init_y=400).add_components(button, 25, 25)
         self.add_component_foreground(menu_frame)
+        menu = Menu("mnu_main", init_z=0, init_h=200, init_w=300, 
+                    init_x=((self.settings["screen"]["width"] / 2) - 75),
+                    init_y=200, background=Color.RED).add_menu_item(button.clone(), button.w, button.h).add_menu_item(button.clone(), button.w, button.h)
+        self.add_component_foreground(menu)
 
     def move_actor_right(self):
         if not self.attacking:

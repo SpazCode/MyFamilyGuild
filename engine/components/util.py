@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import inspect
 
 
 def load_json(filepath):
@@ -10,9 +11,7 @@ def load_json(filepath):
 
 
 def check_type(obj, target_class):
-    if type(obj).__name__ == target_class:
-        return True
-    for classes in type(obj).__bases__:
+    for classes in inspect.getmro(type(obj)):
         if classes.__name__ == target_class:
             return True
     raise InvalidTypeExceptipn(

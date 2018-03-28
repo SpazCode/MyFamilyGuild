@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import copy
 
 
 # Class to represent game objects on screen. Display objects
@@ -64,6 +65,10 @@ class DisplayObject(object):
     # Update game everyframe.
     def update(self):
         pass
+
+    # Create a clone of the object.
+    def clone(self):
+        return copy.copy(self)
 
     # String representation of the DOsplay Object on screen.
     def __str__(self):
